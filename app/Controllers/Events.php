@@ -15,6 +15,8 @@ class Events extends ResourceController
 	 *
 	 * @return mixed
 	 */
+
+	 // Fonction qui permet de récuperer les informations lié au evenement. 
 	public function index()
 	{
 		$model = new EventsModel();
@@ -26,39 +28,18 @@ class Events extends ResourceController
             'status' => 200,
             'error' => null,
             'messages' => "Events Found",
-            "data" => $data,
+            "data" => [$data],
         ];
 		
         return $this->respond($response);
 	}
 
-	/**
-	 * Return the properties of a resource object
-	 *
-	 * @return mixed
-	 */
-	public function show($id = null)
-	{
-		//
-	}
+	
 
-	/**
-	 * Return a new resource object, with default properties
-	 *
-	 * @return mixed
-	 */
-	public function new()
-	{
-		//
-	}
-
-	/**
-	 * Create a new resource object, from "posted" parameters
-	 *
-	 * @return mixed
-	 */
+	
 	public function create($id = null)
 	{
+		// Fonction qui permet de crée un evenement
 		$model = new EventsModel();
 
 		$user = new UserModel();
@@ -95,23 +76,10 @@ class Events extends ResourceController
 	
 	}
 
-	/**
-	 * Return the editable properties of a resource object
-	 *
-	 * @return mixed
-	 */
-	public function edit($id = null)
-	{
-		//
-	}
-
-	/**
-	 * Add or update a model resource, from "posted" properties
-	 *
-	 * @return mixed
-	 */
+	
 	public function update($id = null)
 	{
+		// Fonction qui permet de réaliser un UPDATE des informations lié a l'evenement
 		$model = new EventsModel();
         $data = $model->find($id);
         // $data = $request->getRawInput();
@@ -145,13 +113,9 @@ class Events extends ResourceController
         }
 	}
 
-	/**
-	 * Delete the designated resource object from the model
-	 *
-	 * @return mixed
-	 */
 	public function delete($id = null)
 	{
+		// Fonction qui supprime l'evenement au sein de la base de donnée.
 		$model = new EventsModel();
 
         $data = $model->find($id);

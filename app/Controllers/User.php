@@ -10,6 +10,10 @@ use \Firebase\JWT\JWT;
 
 class User extends ResourceController
 {
+
+    /*
+        Fonction qui permet de récuperer toutes les informations relatives aux utilisateurs au sein de la base de donnée.
+    */
     public function index()
 	{
 		$model = new UserModel();
@@ -22,12 +26,15 @@ class User extends ResourceController
             'messages' => "Members Found",
             "data" => $data,
         ];
+
+        // Return de ma data => Data correspondant à un tableau des donnés retournés.
         return $this->respond($response);
 	}
 
 
 
     public function register()
+    // Fonction qui permet d'enregistrer un utilisateur au sein de la base de donnée.
     {
         $rules = [
             "name" => "required",
@@ -35,7 +42,7 @@ class User extends ResourceController
             "phone_no" => "required",
             "password" => "required",
         ];
-
+            // Définis les regles a respecter pour pouvoir inscrire l'utilisateur
         $messages = [
             "name" => [
                 "required" => "Name is required"
@@ -52,6 +59,8 @@ class User extends ResourceController
             ],
         ];
 
+        // Messages associé aux regles a respecter
+
         if (!$this->validate($rules, $messages)) {
 
             $response = [
@@ -60,10 +69,11 @@ class User extends ResourceController
                 'message' => $this->validator->getErrors(),
                 'data' => []
             ];
+            // Si cela ne respect pas les regles alors on retourne le message correspondant.
         } else {
-
+   
             $userModel = new UserModel();
-            // $email_split = $data["email"];
+        
             $data = [
                 "name" => $this->request->getVar("name"),
                 "email" => $this->request->getVar("email"),
@@ -71,9 +81,9 @@ class User extends ResourceController
                 "password" => password_hash($this->request->getVar("password"), PASSWORD_DEFAULT),
             ];
             
-
+         // A l'inverse nous inserons l'utilisateur au sein de la base de donnée.
             if ($userModel->insert($data)) {
-
+                
                 $response = [
                     'status' => 200,
                     "error" => false,
@@ -96,32 +106,15 @@ class User extends ResourceController
 
 
 
-    public function edit($id = null)
-	{
-		//
-	}
-
-	/**
-	 * Add or update a model resource, from "posted" properties
-	 *
-	 * @return mixed
-	 */
+   
 	public function update($id = null)
 	{
+
+        // Fonction qui permet de réaliser l'update de l'utilisateur au sein de la base de donnée via l'ID 
 		$model = new UserModel();
         $data = $model->find($id);
-        // $data = $request->getRawInput();
-        // $method = $request->getMethod();
-     
-        // $data = [
-        //     'id' => $id,
-        //     'name' => $this->request->getVar('name'),
-        //     'email' => $this->request->getVar('email'),
-        //     'phone_no' => $this->request->getVar('phone_no')
-           
-        // ];
-
-        $data = $this->request->getRawInput(); 
+  
+      $data = $this->request->getRawInput(); 
 
         if($data)
         {
@@ -150,6 +143,7 @@ class User extends ResourceController
 
     public function login()
     {
+        // Fonction qui permet de se connecté a la base de données avec les bonnes informations
         $rules = [
             "email" => "required|valid_email|min_length[6]",
             "password" => "required",
@@ -184,7 +178,7 @@ class User extends ResourceController
             if (!empty($userdata)) {
 
                 if (password_verify($this->request->getVar("password"), $userdata['password'])) {
-
+                    // Défini le JWT (JSON Web Token)
                     $key = $this->getKey();
 
                     $iat = time(); // current timestamp value
@@ -201,7 +195,7 @@ class User extends ResourceController
                     );
 
                     $token = JWT::encode($payload, $key);
-
+                    // encode les données du payload (données de l'utilisateur)
                     $response = [
                         'status' => 200,
                         'error' => false,
@@ -235,6 +229,7 @@ class User extends ResourceController
 
     public function details()
     {
+        // Fonction qui permet de récupérer les informations liés à un TOKEN 
         $key = $this->getKey();
         $authHeader = $this->request->getHeader("Authorization");
         $authHeader = $authHeader->getValue();
